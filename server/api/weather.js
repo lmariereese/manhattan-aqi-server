@@ -2,6 +2,23 @@ const router = require('express').Router()
 const {Weather} = require('../db/models')
 module.exports = router
 
+router.get('/mostrecent', async (req, res, next) => {
+  try {
+    const recentWeather = await Weather.findAll({
+      limit: 1,
+      order: [['createdAt', 'DESC']]
+    })
+    if (recentWeather) {
+      // recent weather is an array containing one object
+      res.status(200).json(recentWeather)
+    } else {
+      res.status(400).send('Could not get most recent weather.')
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
 router.post('/', async (req, res, next) => {
   try {
     console.log('REQ.BODY: ', req.body)
