@@ -89,7 +89,7 @@ const createApp = () => {
   // })
 
   // runs once an hour at minute 0 '0 * * * *'
-  cron.schedule('* * * * *', async function() {
+  cron.schedule('0 * * * *', async function() {
     console.log('-------------')
     console.log('Running cron job')
 
@@ -101,8 +101,14 @@ const createApp = () => {
         const pollution = data.data.current.pollution
         const weather = data.data.current.weather
 
-        await Axios.post('http://localhost:8080/api/pollution', pollution)
-        await Axios.post('http://localhost:8080/api/weather', weather)
+        await Axios.post(
+          'https://manhattan-aqi.herokuapp.com/api/pollution',
+          pollution
+        )
+        await Axios.post(
+          'https://manhattan-aqi.herokuapp.com/api/weather',
+          weather
+        )
       }
     }
     await getData()()
