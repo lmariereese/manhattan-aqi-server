@@ -4,7 +4,6 @@ module.exports = router
 
 router.post('/', async (req, res, next) => {
   try {
-    console.log(req.body)
     const pollutionEntry = await Pollution.create({
       timestamp: req.body.ts,
       aqi: req.body.aqius,
