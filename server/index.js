@@ -9,7 +9,10 @@ const db = require('./db')
 const sessionStore = new SequelizeStore({db})
 const PORT = process.env.PORT || 8080
 const app = express()
+const cron = require('node-cron')
+const Axios = require('axios')
 const socketio = require('socket.io')
+const addNewReport = require('./job')
 module.exports = app
 
 // This is a global Mocha hook, used for resource cleanup.
@@ -85,6 +88,31 @@ const createApp = () => {
   // app.use('*', (req, res) => {
   //   res.sendFile(path.join(__dirname, '..', 'public/index.html'))
   // })
+
+  // runs once an hour at minute 0
+  cron.schedule('* * * * *', async function() {
+    console.log('-------------')
+    console.log('Running cron job')
+
+    function getData() {
+      return async function() {
+        const {data} = await Axios.get(
+          'https://api.airvisual.com/v2/city?city=Manhattan&state=New York&country=USA&key=4a03b929-87e5-47c5-a7e2-5a203095e1c9'
+        )
+        const current = data.data.current
+        const pollution = data.data.current.pollution
+        // const weather = data.data.current.weather;
+        // console.log('INSIDE GETDATA: ', pollution);
+        // console.log('INSIDE GETDATA: ', weather);
+        await Axios.post('http://localhost:8080/api/pollution', pollution)
+        // return current;
+        // await Axios.post('/api/pollution', pollution);
+      }
+    }
+    await getData()()
+    // await addNewReport(getData());
+    console.log('Finished cron job')
+  })
 
   // error handling endware
   app.use((err, req, res, next) => {

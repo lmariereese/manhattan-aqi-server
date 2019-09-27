@@ -3,13 +3,16 @@ const db = require('../db')
 
 const Pollution = db.define('pollution', {
   timestamp: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
+    allowNull: false
   },
   aqi: {
-    type: Sequelize.INTEGER
+    type: Sequelize.INTEGER,
+    allowNull: false
   },
-  main: {
-    type: Sequelize.STRING
+  mainPollutant: {
+    type: Sequelize.STRING,
+    allowNull: false
   }
 })
 
