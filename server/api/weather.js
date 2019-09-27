@@ -4,6 +4,7 @@ module.exports = router
 
 router.post('/', async (req, res, next) => {
   try {
+    console.log('REQ.BODY: ', req.body)
     const weatherEntry = await Weather.create({
       timestamp: req.body.ts,
       temperature: req.body.tp,
