@@ -1,6 +1,10 @@
 const router = require('express').Router()
 module.exports = router
 
+router.get('/', async (req, res, next) => {
+  res.send('This is some text')
+})
+
 router.use('/users', require('./users'))
 router.use('/pollution', require('./pollution'))
 router.use('/weather', require('./weather'))
