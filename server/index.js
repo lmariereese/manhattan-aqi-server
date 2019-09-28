@@ -90,7 +90,7 @@ const createApp = () => {
   })
 
   // runs once an hour at minute 0 '0 * * * *'
-  cron.schedule('0 * * * *', async function() {
+  cron.schedule('10 * * * *', async function() {
     console.log('-------------')
     console.log('Running cron job')
     const {data} = await Axios.get(
