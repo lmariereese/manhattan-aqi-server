@@ -12,6 +12,7 @@ const app = express()
 const cron = require('node-cron')
 const Axios = require('axios')
 const socketio = require('socket.io')
+const {Pollution, Weather} = require('./db/models')
 module.exports = app
 
 // This is a global Mocha hook, used for resource cleanup.
@@ -92,26 +93,26 @@ const createApp = () => {
   cron.schedule('0 * * * *', async function() {
     console.log('-------------')
     console.log('Running cron job')
+    const {data} = await Axios.get(
+      'https://api.airvisual.com/v2/city?city=Manhattan&state=New York&country=USA&key=4a03b929-87e5-47c5-a7e2-5a203095e1c9'
+    )
+    const pollution = data.data.current.pollution
+    const weather = data.data.current.weather
 
-    function getData() {
-      return async function() {
-        const {data} = await Axios.get(
-          'https://api.airvisual.com/v2/city?city=Manhattan&state=New York&country=USA&key=4a03b929-87e5-47c5-a7e2-5a203095e1c9'
-        )
-        const pollution = data.data.current.pollution
-        const weather = data.data.current.weather
-
-        await Axios.post(
-          'https://manhattan-aqi.herokuapp.com/api/pollution',
-          pollution
-        )
-        await Axios.post(
-          'https://manhattan-aqi.herokuapp.com/api/weather',
-          weather
-        )
-      }
-    }
-    await getData()()
+    await Pollution.create({
+      timestamp: pollution.ts,
+      aqi: pollution.aqius,
+      mainPollutant: pollution.mainus
+    })
+    await Weather.create({
+      timestamp: weather.ts,
+      temperature: weather.tp,
+      pressure: weather.pr,
+      humidity: weather.hu,
+      windSpeed: weather.ws,
+      windDirection: weather.wd,
+      icon: weather.ic
+    })
     console.log('Finished cron job')
   })
 
