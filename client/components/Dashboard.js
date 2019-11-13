@@ -13,10 +13,26 @@ class Dashboard extends React.Component {
   }
 
   render() {
+    const currentWeather = this.props.currentWeather;
+    const currentPollution = this.props.currentPollution;
     return (
       <div className="wrapper">
         <h2>Dashboard</h2>
-        {/* {this.props.currentWeather ? <p>{this.props.currentWeather}</p> : ''} */}
+        <div>
+          {currentWeather && currentPollution ? (
+            <div className="current-condition-div">
+              <p>Temperature: {currentWeather.temperature}</p>
+              <p>Humidity: {currentWeather.humidity}%</p>
+              <p>Pressure: {currentWeather.pressure}</p>
+              <p>Wind Speed: {currentWeather.windSpeed}</p>
+              <p>Wind Direction: {currentWeather.windDirection}</p>
+              <p>AQI: {currentPollution.aqi}</p>
+              <p>Main Pollutant: {currentPollution.mainPollutant}</p>
+            </div>
+          ) : (
+            ''
+          )}
+        </div>
       </div>
     );
   }
