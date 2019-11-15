@@ -4,12 +4,18 @@ import {getCurrentWeather} from '../store/weather';
 import {getCurrentPollution} from '../store/pollution';
 
 class Dashboard extends React.Component {
-  // constructor(props) {
-  //   super(props)
-  // }
+  constructor(props) {
+    super(props);
+    this.toFahrenheit = this.toFahrenheit.bind(this);
+  }
+
   componentDidMount() {
     this.props.getCurrentWeather();
     this.props.getCurrentPollution();
+  }
+
+  toFahrenheit(temp) {
+    return temp * 1.8 + 32;
   }
 
   render() {
@@ -21,7 +27,10 @@ class Dashboard extends React.Component {
         <div>
           {currentWeather && currentPollution ? (
             <div className="current-condition-div">
-              <p>Temperature: {currentWeather.temperature}</p>
+              <p>
+                Temperature:{' '}
+                {`${this.toFahrenheit(currentWeather.temperature)}°F`}
+              </p>
               <p>Humidity: {currentWeather.humidity}%</p>
               <p>Pressure: {currentWeather.pressure}</p>
               <p>Wind Speed: {currentWeather.windSpeed}</p>
